@@ -1,10 +1,11 @@
 """
 Author       : u21h2
 CreateTime   : 2021-07-20 15:56:46
-LastEditTime : 2021-07-26 12:28:02
+LastEditTime : 2021-07-26 12:31:17
 Email        : quzhenqing@zju.edu.cn
 Description  : monte-carlo-tree-search 解决[选择数字使累加和为0之类的游戏]
 InspiredFrom : https://zhuanlan.zhihu.com/p/30458774
+InspiredFrom : https://github.com/tobegit3hub/ml_implementation
 RelatedVideo : https://www.youtube.com/watch?v=UXW2yZndl7U
 """
 import sys
