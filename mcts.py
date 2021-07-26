@@ -1,9 +1,9 @@
 """
 Author       : u21h2
 CreateTime   : 2021-07-20 15:56:46
-LastEditTime : 2021-07-26 12:31:17
+LastEditTime : 2021-07-26 16:00:50
 Email        : quzhenqing@zju.edu.cn
-Description  : monte-carlo-tree-search 解决[选择数字使累加和为0之类的游戏]
+Description  : monte-carlo-tree-search 解决Game:默认分数0.5,每次action会对分数产生变化[-0.1,0.1],寻找action路径,使分数尽快降到阈值
 InspiredFrom : https://zhuanlan.zhihu.com/p/30458774
 InspiredFrom : https://github.com/tobegit3hub/ml_implementation
 RelatedVideo : https://www.youtube.com/watch?v=UXW2yZndl7U
@@ -13,10 +13,11 @@ import math
 import random
 import numpy as np
 
-# ALL_AVAILABLE_CHOICES = range(-10,11) # -10:10
-ALL_AVAILABLE_CHOICES = np.arange(0, 1, 0.01)
+ALL_AVAILABLE_CHOICES = np.arange(-0.1, 0.1, 0.01)
 AVAILABLE_CHOICE_NUMBER = len(ALL_AVAILABLE_CHOICES)
 MAX_ROUND_NUMBER = 10
+COMPUTATION_BUGDET = 100
+THRESH = 0.1
 
 
 class State(object):
@@ -25,8 +26,8 @@ class State(object):
     需要实现判断当前状态是否达到游戏结束状态，支持从Action集合中随机取出操作。
     """
 
-    def __init__(self):
-        self.current_value = 0.0
+    def __init__(self,init_value=0.0):
+        self.current_value = init_value
         # For the first root node, the index is 0 and the game should start from 1
         self.current_round_index = 0
         self.cumulative_choices = []
@@ -55,7 +56,7 @@ class State(object):
 
     def compute_reward(self):
         # return self.current_value
-        return -abs(self.current_value)
+        return -self.current_value*10
 
     def get_available_choices(self):
         # 选出还没用过的choice
@@ -165,7 +166,6 @@ def default_policy(node):
     current_state = node.get_state()
     # Run until the game over
     while current_state.is_terminal() == False:
-
         # Pick one random action to play and get next state
         current_state = current_state.get_next_state()
 
@@ -252,11 +252,8 @@ def monte_carlo_tree_search(node):
     最后一步使用backup也就是把reward更新到所有经过的选中节点的节点上。
     进行预测时，只需要根据Q值选择exploitation最大的节点即可，找到下一个最优的节点。
     """
-
-    computation_budget = 5
-
     # Run as much as possible under the computation budget
-    for _ in range(computation_budget):
+    for _ in range(COMPUTATION_BUGDET):
 
         # 1. Find the best node to expand
         expand_node = tree_policy(node)
@@ -274,7 +271,7 @@ def monte_carlo_tree_search(node):
 
 def main():
     # Create the initialized state and initialized node
-    init_state = State()
+    init_state = State(init_value=0.5)
     init_node = Node()
     init_node.set_state(init_state)
     current_node = init_node
@@ -283,6 +280,9 @@ def main():
     for i in range(MAX_ROUND_NUMBER):
         current_node = monte_carlo_tree_search(current_node)
         print("{}".format(current_node))
+        value = current_node.get_state().get_current_value()
+        if value <= THRESH:
+            break
 
 
 if __name__ == "__main__":
@@ -290,6 +290,5 @@ if __name__ == "__main__":
 
 """
 todo:
-  代码看明白
   选出哪个路径是最优的
 """
