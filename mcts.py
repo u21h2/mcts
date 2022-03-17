@@ -7,6 +7,7 @@ Description  : monte-carlo-tree-search 解决Game:默认分数0.5,每次action�
 InspiredFrom : https://zhuanlan.zhihu.com/p/30458774
 InspiredFrom : https://github.com/tobegit3hub/ml_implementation
 RelatedVideo : https://www.youtube.com/watch?v=UXW2yZndl7U
+AGoodGuide   : https://int8.io/monte-carlo-tree-search-beginners-guide/
 """
 import sys
 import math
